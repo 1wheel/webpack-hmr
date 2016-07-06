@@ -26,9 +26,9 @@ function drawOutline(){
 
 function drawTriangle(p){
   ctx.beginPath()
-  ctx.lineTo(p[0][0], p[0][1])
-  ctx.lineTo(p[1][0], p[1][1])
-  ctx.lineTo(p[2][0], p[2][1])
+  ctx.lineTo(p[0].x, p[0].y)
+  ctx.lineTo(p[1].x, p[1].y)
+  ctx.lineTo(p[2].x, p[2].y)
   ctx.fill()
 }
 
@@ -36,33 +36,54 @@ function drawTriangle(p){
 
 ctx.fillStyle = 'rgba(255,255,255,.04)'
 
-var points = d3.range(200).map(function(d, i){
+var points = d3.range(2000).map(function(d, i){
   return [randomL(), randomR(), i % 2 ? randomL() : randomR()]
 })
 
-d3.timer(function(d){
+var t = d3.timer(function(d){
   ctx.clearRect(0, 0, width, height)
 
   drawOutline()
 
   points.forEach(function(p, i){
-    var p = [randomL(), randomR(), i % 2 ? randomL() : randomR()]
+    p.forEach(function(d){
+      d.x += d.s
+      if ( d.isL && d.x > width/2) d.x = 0
+      if (!d.isL && d.x < width/2) d.x = width
+      d.y = XtoY(d.x)
+    })
+
+    var dist = calcCenterDist(p)
+    var opacity = (.1 - dist/2000)
+
+    ctx.fillStyle = 'rgba(255,255,255,' + opacity +')'
     drawTriangle(p)
   })
 
+  // t.stop() 
 })
+// console.log(points.map(calcCenterDist))
 
 
 function randomL(){
   var x = Math.random()*width/2
-  return [x, height - x*2]
+  return {x:x, y: XtoY(x), isL: true, s: .5 - Math.random()}
 }
 
 function randomR(){
   var x = Math.random()*width/2 + width/2
-  return [x, x*2- height]
+  return {x:x, y: XtoY(x), isL: false, s: .5 - Math.random()}
+}
+
+function XtoY(x){
+  return x < width/2 ? height - x*2 : x*2 - height
 }
 
 
-console.log('drawing')
-
+function calcCenterDist(p){
+  return Math.sqrt(
+      (height/2 - p[0].y)*(height/2 - p[0].y) +
+      (height/2 - p[1].y)*(height/2 - p[1].y) +
+      (height/2 - p[2].y)*(height/2 - p[2].y)
+    )
+}
