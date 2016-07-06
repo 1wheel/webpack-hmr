@@ -47,8 +47,9 @@ var t = d3.timer(function(d){
 
   points.forEach(function(p, i){
     p.forEach(function(d){
-      var dx = (height/2 - d.y)*(height/2 - d.y)/200000
-      d.x += d.s < 0 ? -dx - Math.random() : dx + Math.random()
+      var dx = (height/2 - d.y)*(height/2 - d.y)/100000
+      // if (!i) console.log(dx)
+      d.x += d.s < 0 ? -dx - .02 : dx + .02
       // console.log(d.x)
       if ( d.isL && d.x > width/2) d.x = 0
       if (!d.isL && d.x < width/2) d.x = width
@@ -57,8 +58,8 @@ var t = d3.timer(function(d){
 
     var dist = calcCenterDist(p)
     var opacity = (.15 - dist/1500)
-    if (opacity < .001) return
-
+    // if (opacity < .001) return
+    opacity = .1
     ctx.fillStyle = 'rgba(255,255,255,' + opacity +')'
     drawTriangle(p)
   })
