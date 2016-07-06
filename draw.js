@@ -36,7 +36,7 @@ function drawTriangle(p){
 
 ctx.fillStyle = 'rgba(255,255,255,.04)'
 
-var points = d3.range(2000).map(function(d, i){
+var points = d3.range(1000).map(function(d, i){
   return [randomL(), randomR(), i % 2 ? randomL() : randomR()]
 })
 
@@ -47,14 +47,17 @@ var t = d3.timer(function(d){
 
   points.forEach(function(p, i){
     p.forEach(function(d){
-      d.x += d.s
+      var dx = (height/2 - d.y)*(height/2 - d.y)/200000
+      d.x += d.s < 0 ? -dx - Math.random() : dx + Math.random()
+      // console.log(d.x)
       if ( d.isL && d.x > width/2) d.x = 0
       if (!d.isL && d.x < width/2) d.x = width
       d.y = XtoY(d.x)
     })
 
     var dist = calcCenterDist(p)
-    var opacity = (.1 - dist/2000)
+    var opacity = (.15 - dist/1500)
+    if (opacity < .001) return
 
     ctx.fillStyle = 'rgba(255,255,255,' + opacity +')'
     drawTriangle(p)
@@ -67,12 +70,12 @@ var t = d3.timer(function(d){
 
 function randomL(){
   var x = Math.random()*width/2
-  return {x:x, y: XtoY(x), isL: true, s: .5 - Math.random()}
+  return {x:x, y: XtoY(x), isL: true, s: Math.random()}
 }
 
 function randomR(){
   var x = Math.random()*width/2 + width/2
-  return {x:x, y: XtoY(x), isL: false, s: .5 - Math.random()}
+  return {x:x, y: XtoY(x), isL: false, s: -Math.random()}
 }
 
 function XtoY(x){
