@@ -1,5 +1,11 @@
 require("./style.css");
-require("./draw.js");
 
+var draw = require("./draw.js");
 
-document.write("Webpack is doinddg its thing.");
+module.exports = null;
+
+if(module.hot) {
+  module.hot.accept();
+
+  module.hot.dispose(function() { });
+}
