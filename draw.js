@@ -58,9 +58,9 @@ var t = d3.timer(function(d){
 
     var dist = calcCenterDist(p)
     var opacity = (.15 - dist/1500)
-    // if (opacity < .001) return
+    if (opacity < .001) return
     opacity = .1
-    ctx.fillStyle = 'rgba(255,255,255,' + opacity +')'
+    ctx.fillStyle = 'rgba(0,255,255,' + opacity +')'
     drawTriangle(p)
   })
 

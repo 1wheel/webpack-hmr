@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --progress --inline"
+    "start": "webpack-dev-server ./index --hot --inline --module-bind 'css=style\\!css'"
   },
   "repository": {
     "type": "git",

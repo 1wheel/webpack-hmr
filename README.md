@@ -1,4 +1,14 @@
-# webpack-hmr
+# run
+
+    npm install
+    npm start &
+    http://localhost:8080/
+
+edit and save `draw.js` or `style.css` - changes appear without a reload!
+
+
+
+# notes
 
 http://matthewlehner.net/react-hot-module-replacement-with-webpack/
 
@@ -11,15 +21,9 @@ https://medium.com/@rajaraodv/webpack-hot-module-replacement-hmr-e756a726a07#.ff
 # todo
 
 - [x] load d3
-- [ ] load jetpack
+- [ ] jetpack modules not loading
 - [ ] try canvas
+- [ ] preview intergration
 - [ ] 
 - [ ] 
 - [ ] 
-- [ ] 
-
-# run
-
-    npm install
-    webpack-dev-server ./index --hot --inline --module-bind "css=style\!css"
-
