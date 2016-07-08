@@ -36,47 +36,58 @@ function drawTriangle(p){
 
 ctx.fillStyle = 'rgba(255,255,255,.04)'
 
-var points = d3.range(1000).map(function(d, i){
+var points = d3.range(2000).map(function(d, i){
   return [randomL(), randomR(), i % 2 ? randomL() : randomR()]
 })
 
-var t = d3.timer(function(d){
+if (window.t) window.t.stop()
+window.points = points
+window.t = d3.timer(function(d){
   ctx.clearRect(0, 0, width, height)
 
   drawOutline()
 
   points.forEach(function(p, i){
-    p.forEach(function(d){
-      var dx = (height/2 - d.y)*(height/2 - d.y)/100000
-      // if (!i) console.log(dx)
-      d.x += d.s < 0 ? -dx - .02 : dx + .02
-      // console.log(d.x)
-      if ( d.isL && d.x > width/2) d.x = 0
-      if (!d.isL && d.x < width/2) d.x = width
+    p.forEach(function(d, i){
+      var dx = Math.abs(height/2 - d.y)/100
+      dx = clamp(-1, dx, 1)
+      // d.x += d.s < 0 ? -dx : dx
+      debugger
+      d.x += d.s < 0 ? -1 : 1
+      if ( d.isL && d.x > width/2){
+        d.s = -d.s
+        d.x = width/2 + 1
+      }
+      if (!d.isL && d.x < width/2){
+        d.s = -d.s
+        d.x = width/2 - 1
+      }
+      if (d.x < 0 || d.x > width){
+        d.s = -d.s
+      }
+
       d.y = XtoY(d.x)
     })
 
     var dist = calcCenterDist(p)
-    var opacity = (.15 - dist/1500)
+    var opacity = (.15 - dist/15000)
     if (opacity < .001) return
-    opacity = .1
+    // opacity = .01
     ctx.fillStyle = 'rgba(0,255,255,' + opacity +')'
     drawTriangle(p)
   })
 
-  // t.stop() 
 })
-// console.log(points.map(calcCenterDist))
 
 
 function randomL(){
   var x = Math.random()*width/2
-  return {x:x, y: XtoY(x), isL: true, s: Math.random()}
+  return {x:x, y: XtoY(x), isL: true, s: (.5 - Math.random()/2)/10}
 }
 
 function randomR(){
   var x = Math.random()*width/2 + width/2
-  return {x:x, y: XtoY(x), isL: false, s: -Math.random()}
+  return {x:x, y: XtoY(x), isL: false, s: (.5 -Math.random()/2)/10}
 }
 
 function XtoY(x){
@@ -85,9 +96,15 @@ function XtoY(x){
 
 
 function calcCenterDist(p){
+  return Math.abs(height/2 - p[0].y)*Math.abs(height/2 - p[1].y)*Math.abs(height/2 - p[2].y)
+
   return Math.sqrt(
       (height/2 - p[0].y)*(height/2 - p[0].y) +
       (height/2 - p[1].y)*(height/2 - p[1].y) +
       (height/2 - p[2].y)*(height/2 - p[2].y)
     )
+}
+
+function clamp(a, b, c){
+  return b < a ? a : b > c ? c : b
 }
