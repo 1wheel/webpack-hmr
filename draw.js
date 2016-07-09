@@ -70,12 +70,14 @@ window.t = d3.timer(function(d){
     })
 
     var dist = calcCenterDist(p)
-    // var opacity = dist < 10 ? .1 : .005 //(.15 - dist/15000)
-    // opacity = Math.max(.005, .15 - dist/10000)
-    // if (opacity < .001) return
-    opacity = .004
-    // opacity = .4
-    ctx.fillStyle = dist < 100 ? 'rgba(0,255,255,' + opacity +')' : 'rgba(255,255,255,' + opacity +')'
+    var isAbove = calcIsAbove(p)
+
+    ctx.fillStyle = ['rgba(', 
+      dist < 1000 &&  isAbove ? 0 : 255, ',', 
+      dist < 1000 && !isAbove ? 0 : 255, ',', 
+      255, ',', 
+      dist < 10 ? .004 : .004, ')'].join('')
+
     drawTriangle(p)
   })
 
@@ -97,14 +99,12 @@ function XtoY(x){
 }
 
 
-function calcCenterDist(p){
-  return Math.abs(height/2 - p[0].y)*Math.abs(height/2 - p[1].y)*Math.abs(height/2 - p[2].y)
+function calcIsAbove(p){
+  return height/2*3 - p[0].y - p[1].y - p[2].y > 0
+}
 
-  return Math.sqrt(
-      (height/2 - p[0].y)*(height/2 - p[0].y) +
-      (height/2 - p[1].y)*(height/2 - p[1].y) +
-      (height/2 - p[2].y)*(height/2 - p[2].y)
-    )
+function calcCenterDist(p){
+  return Math.abs(height/2 - p[0].y) + Math.abs(height/2 - p[1].y) + Math.abs(height/2 - p[2].y)
 }
 
 function clamp(a, b, c){
