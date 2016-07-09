@@ -73,10 +73,10 @@ window.t = d3.timer(function(d){
     var isAbove = calcIsAbove(p)
 
     ctx.fillStyle = ['rgba(', 
-      dist < 1000 &&  isAbove ? 0 : 255, ',', 
-      dist < 1000 && !isAbove ? 0 : 255, ',', 
+        p[0].s < 0 ? 0 : 255, ',', 
+        p[0].s > 0 ? 0 : 255, ',', 
       255, ',', 
-      dist < 10 ? .004 : .004, ')'].join('')
+      .004, ')'].join('')
 
     drawTriangle(p)
   })
