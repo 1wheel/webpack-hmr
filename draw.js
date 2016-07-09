@@ -35,8 +35,9 @@ function drawTriangle(p){
 
 
 ctx.fillStyle = 'rgba(255,255,255,.04)'
+ctx.globalCompositeOperation = 'lighter'
 
-var points = d3.range(2000).map(function(d, i){
+var points = d3.range(1000).map(function(d, i){
   return [randomL(), randomR(), i % 2 ? randomL() : randomR()]
 })
 
@@ -49,18 +50,17 @@ window.t = d3.timer(function(d){
 
   points.forEach(function(p, i){
     p.forEach(function(d, i){
-      var dx = Math.abs(height/2 - d.y)/100
-      dx = clamp(-1, dx, 1)
-      // d.x += d.s < 0 ? -dx : dx
-      debugger
-      d.x += d.s < 0 ? -1 : 1
+      var dx = .0005 + Math.abs(height/2 - d.y)/10
+      var dist = Math.abs(height/2 - d.y)
+      var dx = d.s*(dist + Math.abs(d.s))/100
+      d.x += clamp(-1, dx, 1)
       if ( d.isL && d.x > width/2){
         d.s = -d.s
-        d.x = width/2 + 1
+        d.x = width/2
       }
       if (!d.isL && d.x < width/2){
         d.s = -d.s
-        d.x = width/2 - 1
+        d.x = width/2
       }
       if (d.x < 0 || d.x > width){
         d.s = -d.s
@@ -70,10 +70,12 @@ window.t = d3.timer(function(d){
     })
 
     var dist = calcCenterDist(p)
-    var opacity = (.15 - dist/15000)
-    if (opacity < .001) return
-    // opacity = .01
-    ctx.fillStyle = 'rgba(0,255,255,' + opacity +')'
+    // var opacity = dist < 10 ? .1 : .005 //(.15 - dist/15000)
+    // opacity = Math.max(.005, .15 - dist/10000)
+    // if (opacity < .001) return
+    opacity = .004
+    // opacity = .4
+    ctx.fillStyle = dist < 100 ? 'rgba(0,255,255,' + opacity +')' : 'rgba(255,255,255,' + opacity +')'
     drawTriangle(p)
   })
 
@@ -81,13 +83,13 @@ window.t = d3.timer(function(d){
 
 
 function randomL(){
-  var x = Math.random()*width/2
-  return {x:x, y: XtoY(x), isL: true, s: (.5 - Math.random()/2)/10}
+  var x = width/4 + Math.random()*20 - 10
+  return {x:x, y: XtoY(x), isL: true, s: (.5 - Math.random())}
 }
 
 function randomR(){
-  var x = Math.random()*width/2 + width/2
-  return {x:x, y: XtoY(x), isL: false, s: (.5 -Math.random()/2)/10}
+  var x = width/4 + Math.random()*20 - 10 + width/2
+  return {x:x, y: XtoY(x), isL: false, s: (.5 -Math.random())}
 }
 
 function XtoY(x){
